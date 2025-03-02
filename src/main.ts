@@ -13,13 +13,15 @@ canvas.height = screenHeight;
 
 class DVD {
   readonly text = "DVD";
-  readonly width = 100;
-  readonly height = 50;
+  readonly width = 200;
+  readonly height = 100;
 
   x: number;
   y: number;
-  speedX = 2;
-  speedY = 2;
+  speedX = 4;
+  speedY = 4;
+
+  squareColor = "white";
 
   constructor(
     readonly ctx: CanvasRenderingContext2D,
@@ -34,11 +36,11 @@ class DVD {
     this.ctx.fillStyle = "#000";
     this.ctx.fillRect(0, 0, this.screenWidth, this.screenHeight);
 
-    this.ctx.fillStyle = "white";
+    this.ctx.fillStyle = this.squareColor;
     this.ctx.fillRect(this.x, this.y, this.width, this.height);
 
     this.ctx.fillStyle = "black";
-    this.ctx.font = "24px Arial";
+    this.ctx.font = "48px Arial";
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
     this.ctx.fillText(
@@ -54,15 +56,19 @@ class DVD {
 
     if (this.x + this.width > this.screenWidth || this.x < 0) {
       this.speedX = -this.speedX;
+      return { isCollision: true };
     }
 
     if (this.y + this.height > this.screenHeight || this.y < 0) {
       this.speedY = -this.speedY;
+      return { isCollision: true };
     }
+    return { isCollision: false };
   }
 
   loop() {
-    this.move();
+    const { isCollision } = this.move();
+    if (isCollision) this.changeColor();
     this.draw();
     requestAnimationFrame(() => this.loop());
   }
@@ -71,6 +77,14 @@ class DVD {
     this.screenWidth = screenWidth;
     this.screenHeight = screenHeight;
     this.draw();
+  }
+
+  changeColor() {
+    const l = Math.random() * 0.7 + 0.3;
+    const c = Math.random() * 0.3 + 0.1;
+    const h = Math.random() * 360;
+
+    this.squareColor = `oklch(${l} ${c} ${h})`;
   }
 }
 
