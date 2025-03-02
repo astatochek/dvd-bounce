@@ -13,8 +13,8 @@ canvas.height = screenHeight;
 
 class DVD {
   readonly text = "DVD";
-  readonly width = 200;
-  readonly height = 100;
+  readonly width = 300;
+  readonly height = 150;
 
   x: number;
   y: number;
