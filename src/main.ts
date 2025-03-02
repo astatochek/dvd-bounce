@@ -18,10 +18,12 @@ class DVD {
 
   x: number;
   y: number;
-  speedX = 4;
-  speedY = 4;
+  speedX = 2;
+  speedY = 2;
 
   squareColor = "white";
+
+  readonly logo: HTMLImageElement;
 
   constructor(
     readonly ctx: CanvasRenderingContext2D,
@@ -30,6 +32,13 @@ class DVD {
   ) {
     this.x = screenWidth / 2;
     this.y = screenHeight / 2;
+
+    this.logo = new Image();
+    this.logo.src = "./DVD_logo.svg";
+
+    if (!this.logo.complete) {
+      this.logo.onload = () => this.drawLogo();
+    }
   }
 
   draw() {
@@ -39,31 +48,26 @@ class DVD {
     this.ctx.fillStyle = this.squareColor;
     this.ctx.fillRect(this.x, this.y, this.width, this.height);
 
-    this.ctx.fillStyle = "black";
-    this.ctx.font = "48px Arial";
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "middle";
-    this.ctx.fillText(
-      this.text,
-      this.x + this.width / 2,
-      this.y + this.height / 2,
-    );
+    if (this.logo.complete) {
+      this.drawLogo();
+    }
   }
 
   move() {
     this.x += this.speedX;
     this.y += this.speedY;
 
-    if (this.x + this.width > this.screenWidth || this.x < 0) {
+    const isXCollision = this.x + this.width > this.screenWidth || this.x < 0;
+    const isYCollision = this.y + this.height > this.screenHeight || this.y < 0;
+
+    if (isXCollision) {
       this.speedX = -this.speedX;
-      return { isCollision: true };
     }
 
-    if (this.y + this.height > this.screenHeight || this.y < 0) {
+    if (isYCollision) {
       this.speedY = -this.speedY;
-      return { isCollision: true };
     }
-    return { isCollision: false };
+    return { isCollision: isXCollision || isYCollision };
   }
 
   loop() {
@@ -85,6 +89,17 @@ class DVD {
     const h = Math.random() * 360;
 
     this.squareColor = `oklch(${l} ${c} ${h})`;
+  }
+
+  drawLogo() {
+    const padding = 4;
+    this.ctx.drawImage(
+      this.logo,
+      this.x + padding,
+      this.y + padding,
+      this.width - 2 * padding,
+      this.height - 2 * padding,
+    );
   }
 }
 
