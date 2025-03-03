@@ -54,6 +54,16 @@ class DVD {
   }
 
   move() {
+    if (this.x < 0) {
+      this.x = 0;
+    } else if (this.x + this.width > this.screenWidth) {
+      this.x = this.screenWidth - this.width;
+    } else if (this.y < 0) {
+      this.y = 0;
+    } else if (this.y + this.height > this.screenHeight) {
+      this.y = this.screenHeight - this.height;
+    }
+
     this.x += this.speedX;
     this.y += this.speedY;
 
@@ -67,6 +77,7 @@ class DVD {
     if (isYCollision) {
       this.speedY = -this.speedY;
     }
+
     return { isCollision: isXCollision || isYCollision };
   }
 
